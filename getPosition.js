@@ -14,17 +14,10 @@
 if(!navigator.geolocation){
     console.log("Your Browser doesn't support this geolocation feature")
 }else{
-    var start = {
-        latitude :0,
-        longitude :0,
-        accuracy :0
-    }
-    navigator.geolocation.getCurrentPosition(getPosition)
 
     setInterval(()=>{
-        randomMove(start)
-        console.log(start)
-    },100)
+        navigator.geolocation.getCurrentPosition(getPosition)
+    },5000)
 }
 
 var marker, circle
@@ -33,39 +26,6 @@ function getPosition(position) {
     
     var {coords} = position
     var {latitude, longitude, accuracy} = coords
-
-    
-    
-
-
-    start = {latitude,longitude, accuracy}
-}
-
-function randomMove(position) {
-    var {latitude, longitude, accuracy} = position
-    latitude = latitude + (Math.random() * 0.0001)
-    longitude = longitude + (Math.random() * 0.0001)
-    start = {latitude, longitude, accuracy}
-
-
-    var new_center = new L.LatLng(latitude, longitude)
-
-    marker && map.removeLayer(marker) 
-    circle && map.removeLayer(circle) 
-
-    marker = L.marker(new_center)
-    circle = L.circle(new_center, {radius: accuracy})
-
-    var new_feature_group = [marker,circle]
-
-    var featureGroup = L.featureGroup(new_feature_group).addTo(map)
-
-    map.fitBounds(featureGroup.getBounds())
-    
-}
-
-function xxx(position) {
-    var {latitude, longitude, accuracy} = position
     
     var message = `Lat : ${latitude} | Long: ${longitude} | Accuracy : ${accuracy}`
     console.log(message)
