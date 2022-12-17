@@ -19,6 +19,8 @@ if(!navigator.geolocation){
         longitude :0,
         accuracy :0
     }
+    var line = []
+
     navigator.geolocation.getCurrentPosition(getPosition)
 
     setInterval(()=>{
@@ -27,34 +29,35 @@ if(!navigator.geolocation){
     },100)
 }
 
-var marker, circle
+var marker, circle, polyline 
 
 function getPosition(position) {
     
     var {coords} = position
     var {latitude, longitude, accuracy} = coords
-
-    
-    
-
-
+       
     start = {latitude,longitude, accuracy}
+    line.push([latitude, longitude])
 }
 
 function randomMove(position) {
     var {latitude, longitude, accuracy} = position
     latitude = latitude + (Math.random() * 0.0001)
     longitude = longitude + (Math.random() * 0.0001)
+    
     start = {latitude, longitude, accuracy}
+    line.push([latitude, longitude])
 
 
     var new_center = new L.LatLng(latitude, longitude)
 
     marker && map.removeLayer(marker) 
     circle && map.removeLayer(circle) 
+    polyline && map.removeLayer(polyline) 
 
     marker = L.marker(new_center)
     circle = L.circle(new_center, {radius: accuracy})
+    polyline = L.polyline(line, {color: 'red'}).addTo(map);
 
     var new_feature_group = [marker,circle]
 
