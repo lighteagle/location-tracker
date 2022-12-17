@@ -17,7 +17,7 @@ if(!navigator.geolocation){
 
     setInterval(()=>{
         navigator.geolocation.getCurrentPosition(getPosition)
-    },5000)
+    },100)
 }
 
 var marker, circle
