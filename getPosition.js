@@ -10,17 +10,19 @@
     var osm = L.tileLayer(URL_OSM)
     osm.addTo(map)
 
+    var line = []
+    var marker, circle, polyline
+    
+    if(!navigator.geolocation){
+        console.log("Your Browser doesn't support this geolocation feature")
+    }else{
+        
+        setInterval(()=>{
+            navigator.geolocation.getCurrentPosition(getPosition)
+        },1000)
+    }
+    
 
-if(!navigator.geolocation){
-    console.log("Your Browser doesn't support this geolocation feature")
-}else{
-
-    setInterval(()=>{
-        navigator.geolocation.getCurrentPosition(getPosition)
-    },100)
-}
-
-var marker, circle
 
 function getPosition(position) {
     
@@ -28,17 +30,26 @@ function getPosition(position) {
     var {latitude, longitude, accuracy} = coords
     
     var message = `Lat : ${latitude} | Long: ${longitude} | Accuracy : ${accuracy}`
-    console.log(message)
+    console.log(message, line)
 
     var new_center = new L.LatLng(latitude, longitude)
+    line.push([latitude, longitude])
 
     marker && map.removeLayer(marker) 
     circle && map.removeLayer(circle) 
+    if(line.length >= 2) polyline && map.removeLayer(polyline) 
+
 
     marker = L.marker(new_center)
-    circle = L.circle(new_center, {radius: accuracy})
+    circle = L.circle(new_center, {radius: accuracy})    
+    if(line.length >= 2)  polyline = L.polyline(line, {color: 'red'});
 
-    var new_feature_group = [marker,circle]
+
+    if(line.length >= 2) {
+        var new_feature_group = [marker,circle,polyline]
+    }else{
+        var new_feature_group = [marker,circle]
+    }
 
     var featureGroup = L.featureGroup(new_feature_group).addTo(map)
 
